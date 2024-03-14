@@ -16,17 +16,18 @@
     <form class="m-lg-5" action="{{ route('login.action') }}" method="POST">
         @csrf
         @method('POST')
+        <h4 class="mb-3 d-flex justify-content-center">Login</h4>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" name="email" class="form-control" id="exampleInputEmail1"
-                aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1">
         </div>
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" name="password" class="form-control" id="exampleInputPassword1">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-outline-primary col-12 mt-3">Submit</button>
+        <hr>
+        <a href="{{ route('register') }}" class="btn btn-outline-dark col-12">Doesn't Have an Account?</a>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

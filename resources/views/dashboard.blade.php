@@ -13,11 +13,29 @@
 </head>
 
 <body>
+    @if ($auth->roles !== 'user')
+        <div class="m-lg-5 d-flex justify-content-between gap-2">
+            <div class="d-grid col-11">
+                <a href="{{ route('export') }}" class="btn btn-outline-primary">Export Data Peminjaman</a>
+            </div>
+            <div class="d-grid col-1">
+                <a href="{{ route('logout') }}" class="btn btn-outline-danger">Logout</a>
+            </div>
+        </div>
+        <hr class="m-lg-5">
+    @endif
+
+    @if ($auth->roles === 'user')
+        <div class="me-lg-5 mt-lg-4 d-flex justify-content-end">
+            <a href="{{ route('logout') }}" class="btn btn-outline-danger">Logout</a>
+        </div>
+    @endif
+
     @if ($auth->roles === 'master')
         <form class="m-lg-5" action="{{ route('register.admin') }}" method="POST">
             @csrf
             @method('POST')
-            <h5 class="mb-3">Mendaftarkan Admin</h5>
+            <h4 class="mb-3 d-flex justify-content-center">Mendaftarkan Admin</h4>
             <div class="mb-3">
                 <label for="usernameInput" class="form-label">Username</label>
                 <input type="text" class="form-control" id="usernameInput" name="username">
@@ -41,29 +59,32 @@
                 <label for="exampleInputPassword1" class="form-label">Password</label>
                 <input type="password" class="form-control" id="exampleInputPassword1" name="password">
             </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <hr>
+            <div class="d-grid col-12">
+                <button type="submit" class="mt-3 btn btn-outline-primary">Submit</button>
+            </div>
         </form>
+        <hr class="m-lg-5">
     @endif
 
     @if ($auth->roles !== 'user')
         <form class="m-lg-5" action="{{ route('book.category.create') }}" method="POST">
             @csrf
             @method('POST')
-            <h5 class="mb-3">Menambahkan Kategori</h5>
+            <h4 class="mb-3 d-flex justify-content-center">Menambahkan Kategori</h4>
             <div class="mb-3">
                 <label for="nameInput" class="form-label">Category Name</label>
                 <input type="text" name="name" class="form-control" id="nameInput">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <hr>
+            <div class="d-grid col-12">
+                <button type="submit" class="mt-3 btn btn-outline-primary">Submit</button>
+            </div>
         </form>
+        <hr class="m-lg-5">
 
         <form class="m-lg-5" action="{{ route('book.create') }}" method="POST">
             @csrf
             @method('POST')
-            <h5 class="mb-3">Menambahkan Buku</h5>
+            <h4 class="mb-3 d-flex justify-content-center">Menambahkan Buku</h4>
             <div class="mb-3">
                 <label for="titleInput" class="form-label">Title</label>
                 <input type="text" name="title" class="form-control" id="titleInput">
@@ -89,14 +110,16 @@
                 <label for="pubYearInput" class="form-label">Publication Year</label>
                 <input type="number" name="pub_year" class="form-control" id="pubYearInput">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <hr>
+            <div class="d-grid col-12">
+                <button type="submit" class="btn btn-outline-primary mt-3">Submit</button>
+            </div>
         </form>
+        <hr class="m-lg-5">
     @endif
 
     @if ($auth->roles === 'user')
-        <div class="m-lg-5">
-            <h5 class="mb-3">Data Buku</h5>
+        <div class="mb-lg-5 me-lg-5 ms-lg-5 mt-lg-2">
+            <h3 class="mb-3 d-flex justify-content-center">Data Buku</h3>
             <table class="table table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -131,9 +154,10 @@
                                     @method('POST')
                                     <input type="hidden" name="book" value="{{ $book->id }}">
                                     @if ($isLoaned)
-                                        <button type="button" class="btn btn-primary" disabled>Dipinjam</button>
+                                        <button type="button" class="btn btn-outline-primary col-5"
+                                            disabled>Dipinjam</button>
                                     @else
-                                        <button type="submit" class="btn btn-primary">Pinjam</button>
+                                        <button type="submit" class="btn btn-outline-primary col-5">Pinjam</button>
                                     @endif
                                 </form>
                             </td>
@@ -141,11 +165,11 @@
                     @endforeach
                 </tbody>
             </table>
-            <hr>
         </div>
+        <hr class="m-lg-5">
 
         <div class="m-lg-5">
-            <h5 class="mb-3">Data Peminjaman Buku</h5>
+            <h3 class="mb-3 d-flex justify-content-center">Data Peminjaman Buku</h3>
             <table class="table table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -170,15 +194,15 @@
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="loan" value="{{ $loan->id }}">
-                                    <button type="submit" class="btn btn-primary">Kembalikan</button>
+                                    <button type="submit" class="btn btn-outline-primary">Kembalikan</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-            <hr>
         </div>
+        <hr class="m-lg-5">
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

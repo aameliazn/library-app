@@ -16,6 +16,7 @@
     <form class="m-lg-5" action="{{ route('register.user') }}" method="POST">
         @csrf
         @method('POST')
+        <h4 class="mb-3 d-flex justify-content-center">Register</h4>
         <div class="mb-3">
             <label for="usernameInput" class="form-label">Username</label>
             <input type="text" class="form-control" id="usernameInput" name="username">
@@ -31,15 +32,17 @@
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                name="email">
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" name="password">
         </div>
-
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-outline-primary col-12 mt-3">Submit</button>
+        <hr>
+        <a href="{{ route('login') }}" class="btn btn-outline-dark col-12">Have an Account?</a>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
