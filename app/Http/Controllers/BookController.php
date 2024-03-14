@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Loan;
 use App\Http\Controllers\Controller;
 use App\Models\BookCategory;
 use App\Models\RelationBookCategory;
@@ -20,8 +21,23 @@ class BookController extends Controller
         $categories = BookCategory::all();
         $auth = Auth::user();
         $books = Book::all();
-        return view('dashboard', compact('categories', 'auth', 'books'));
+
+        $userLoans = Loan::where('userId', $auth->id)->pluck('bookId');
+
+        $loans = Loan::whereIn('bookId', $userLoans)
+            ->where('userId', $auth->id)
+            ->where('status', 'outstanding')
+            ->with('book')
+            ->get();
+
+        $loans->each(function ($loan) use ($userLoans) {
+            $loan->book->isLoaned = $userLoans->contains($loan->book->id);
+        });
+
+        return view('dashboard', compact('categories', 'auth', 'books', 'loans'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.

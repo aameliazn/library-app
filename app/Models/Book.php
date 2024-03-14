@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Loan;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,4 +19,14 @@ class Book extends Model
         'publisher',
         'pub_year',
     ];
+
+    public function loan()
+    {
+        return $this->hasMany(Loan::class, 'bookId');
+    }
+
+    public function isLoanedByUser(User $user)
+    {
+        return $this->loan->where('userId', $user->id);
+    }
 }

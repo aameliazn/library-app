@@ -35,5 +35,6 @@ Route::controller(BookController::class)->group(function () {
 });
 
 Route::controller(LoanController::class)->group(function () {
-    Route::post('loan/create/{bookId}', 'store')->name('loan.create');
+    Route::post('loan/create/{book}', 'store')->name('loan.create');
+    Route::put('loan/delete/{loan}', 'update')->name('loan.delete');
 });

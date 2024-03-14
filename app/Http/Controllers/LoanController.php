@@ -29,14 +29,14 @@ class LoanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, int $bookId)
+    public function store(Request $request, $book)
     {
         $loanDate = Carbon::now()->toDateString();
         $dueDate = Carbon::createFromFormat('Y-m-d', $loanDate)->addDays(7)->toDateString();
 
         Loan::create([
             'userId' => Auth::user()->id,
-            'bookId' => $bookId,
+            'bookId' => $book,
             'loan_date' => $loanDate,
             'due_date' => $dueDate,
             'status' => 'outstanding',
@@ -64,10 +64,13 @@ class LoanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Loan $loan)
+    public function update(Request $request, $loan)
     {
-        //
+        $loan = Loan::findOrFail($loan);
+        $loan->update(['status' => 'returned']);
+        return back();
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -117,11 +117,24 @@
                             <td>{{ $book->publisher }}</td>
                             <td>{{ $book->pub_year }}</td>
                             <td>
+                                @php
+                                    $isLoaned = false;
+                                    foreach ($loans as $loan) {
+                                        if ($loan->book->id === $book->id) {
+                                            $isLoaned = true;
+                                            break;
+                                        }
+                                    }
+                                @endphp
                                 <form action="{{ route('loan.create', $book->id) }}" method="post">
                                     @csrf
                                     @method('POST')
-                                    <input type="hidden" name="bookId" value="{{ $book->id }}">
-                                    <button type="submit" class="btn btn-primary">Pinjam</button>
+                                    <input type="hidden" name="book" value="{{ $book->id }}">
+                                    @if ($isLoaned)
+                                        <button type="button" class="btn btn-primary" disabled>Dipinjam</button>
+                                    @else
+                                        <button type="submit" class="btn btn-primary">Pinjam</button>
+                                    @endif
                                 </form>
                             </td>
                         </tr>
@@ -139,24 +152,24 @@
                         <th scope="col">#</th>
                         <th scope="col">Title</th>
                         <th scope="col">Author</th>
-                        <th scope="col">Publisher</th>
-                        <th scope="col">Publication Year</th>
+                        <th scope="col">Loan Date</th>
+                        <th scope="col">Due Date</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    @foreach ($books as $book)
+                    @foreach ($loans as $loan)
                         <tr>
                             <th scope="row">{{ $loop->iteration }}</th>
-                            <td>{{ $book->title }}</td>
-                            <td>{{ $book->author }}</td>
-                            <td>{{ $book->publisher }}</td>
-                            <td>{{ $book->pub_year }}</td>
+                            <td>{{ $loan->book->title }}</td>
+                            <td>{{ $loan->book->author }}</td>
+                            <td>{{ \Carbon\Carbon::parse($loan->loan_date)->format('M d, Y') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($loan->due_date)->format('M d, Y') }}</td>
                             <td>
-                                <form action="{{ route('loan.create', $book->id) }}" method="post">
+                                <form action="{{ route('loan.delete', $loan->id) }}" method="post">
                                     @csrf
-                                    @method('POST')
-                                    <input type="hidden" name="bookId" value="{{ $book->id }}">
+                                    @method('PUT')
+                                    <input type="hidden" name="loan" value="{{ $loan->id }}">
                                     <button type="submit" class="btn btn-primary">Kembalikan</button>
                                 </form>
                             </td>
