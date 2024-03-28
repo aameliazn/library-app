@@ -16,7 +16,7 @@
     <form class="m-lg-5" action="{{ route('login.action') }}" method="POST">
         @csrf
         @method('POST')
-        <h4 class="mb-3 d-flex justify-content-center">Login</h4>
+        <h3 class="mb-3 d-flex justify-content-center">Login</h3>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
             <input type="email" name="email" class="form-control" id="exampleInputEmail1">

@@ -16,7 +16,7 @@
     <form class="m-lg-5" action="{{ route('register.user') }}" method="POST">
         @csrf
         @method('POST')
-        <h4 class="mb-3 d-flex justify-content-center">Register</h4>
+        <h3 class="mb-3 d-flex justify-content-center">Register</h3>
         <div class="mb-3">
             <label for="usernameInput" class="form-label">Username</label>
             <input type="text" class="form-control" id="usernameInput" name="username">

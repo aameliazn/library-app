@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Loan;
 use App\Http\Controllers\Controller;
 use App\Models\BookCategory;
+use App\Models\PrivateCollection;
 use App\Models\RelationBookCategory;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class BookController extends Controller
         $categories = BookCategory::all();
         $auth = Auth::user();
         $books = Book::all();
+        $collections = PrivateCollection::all();
 
         $userLoans = Loan::where('userId', $auth->id)->pluck('bookId');
 
@@ -30,14 +32,21 @@ class BookController extends Controller
             ->with('book')
             ->get();
 
+        $loaned = Loan::whereIn('bookId', $userLoans)
+            ->where('status', 'outstanding')
+            ->with('book')
+            ->get();
+
+        $loaned->each(function ($loan) use ($userLoans) {
+            $loan->book->isLoaned = $userLoans->contains($loan->book->id);
+        });
+
         $loans->each(function ($loan) use ($userLoans) {
             $loan->book->isLoaned = $userLoans->contains($loan->book->id);
         });
 
-        return view('dashboard', compact('categories', 'auth', 'books', 'loans'));
+        return view('dashboard', compact('categories', 'auth', 'books', 'loans', 'loaned', 'collections'));
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -86,9 +95,14 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show($book)
     {
-        //
+        PrivateCollection::create([
+            'userId' => Auth::user()->id,
+            'bookId' => $book,
+        ]);
+
+        return back()->with('success', 'berhasil menambah collection');
     }
 
     /**

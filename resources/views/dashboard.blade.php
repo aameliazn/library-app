@@ -13,6 +13,10 @@
 </head>
 
 <body>
+    <div class="m-lg-5 text-center">
+        <h2>Hola {{ $auth->name }}!</h2>
+        <p>{{ \Carbon\Carbon::now()->addHour(7)->isoFormat('dddd, D MMMM Y') }}</p>
+    </div>
     @if ($auth->roles !== 'user')
         <div class="m-lg-5 d-flex justify-content-between gap-2">
             <div class="d-grid col-11">
@@ -26,9 +30,12 @@
     @endif
 
     @if ($auth->roles === 'user')
-        <div class="me-lg-5 mt-lg-4 d-flex justify-content-end">
-            <a href="{{ route('logout') }}" class="btn btn-outline-danger">Logout</a>
+        <div class="m-lg-5 d-flex">
+            <div class="d-grid col-12">
+                <a href="{{ route('logout') }}" class="btn btn-outline-danger">Logout</a>
+            </div>
         </div>
+        <hr class="m-lg-5">
     @endif
 
     @if ($auth->roles === 'master')
@@ -120,15 +127,15 @@
     @if ($auth->roles === 'user')
         <div class="mb-lg-5 me-lg-5 ms-lg-5 mt-lg-2">
             <h3 class="mb-3 d-flex justify-content-center">Data Buku</h3>
-            <table class="table table-hover">
+            <table class="table table-hover" style="text-align:center">
                 <thead class="table-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Author</th>
-                        <th scope="col">Publisher</th>
-                        <th scope="col">Publication Year</th>
-                        <th scope="col"></th>
+                        <th scope="col" style="width:20%">Title</th>
+                        <th scope="col" style="width:20%">Author</th>
+                        <th scope="col" style="width:20%">Publisher</th>
+                        <th scope="col" style="width:17%">Publication Year</th>
+                        <th scope="col" style="width:23%"></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -140,26 +147,43 @@
                             <td>{{ $book->publisher }}</td>
                             <td>{{ $book->pub_year }}</td>
                             <td>
-                                @php
-                                    $isLoaned = false;
-                                    foreach ($loans as $loan) {
-                                        if ($loan->book->id === $book->id) {
-                                            $isLoaned = true;
-                                            break;
+                                <div class="d-flex justify-content-between">
+                                    @php
+                                        $isLoaned = false;
+                                        foreach ($loaned as $loan) {
+                                            if ($loan->book->id === $book->id) {
+                                                $isLoaned = true;
+                                                break;
+                                            }
                                         }
-                                    }
-                                @endphp
-                                <form action="{{ route('loan.create', $book->id) }}" method="post">
-                                    @csrf
-                                    @method('POST')
-                                    <input type="hidden" name="book" value="{{ $book->id }}">
-                                    @if ($isLoaned)
-                                        <button type="button" class="btn btn-outline-primary col-5"
-                                            disabled>Dipinjam</button>
-                                    @else
-                                        <button type="submit" class="btn btn-outline-primary col-5">Pinjam</button>
-                                    @endif
-                                </form>
+                                    @endphp
+                                    
+                                    <form action="{{ route('loan.create', $book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $book->id }}">
+                                        @if ($isLoaned)
+                                            <button type="button" class="btn btn-outline-primary"
+                                                disabled>Dipinjam</button>
+                                        @else
+                                            <button type="submit" class="btn btn-outline-primary">Pinjam</button>
+                                        @endif
+                                    </form>
+
+                                    <form action="{{ route('book.collection.create', $book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $book->id }}">
+                                        <button type="submit" class="btn btn-outline-success">Collection</button>
+                                    </form>
+
+                                    <form action="{{ route('loan.create', $book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $book->id }}">
+                                        <button type="submit" class="btn btn-outline-dark">Review</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -170,7 +194,7 @@
 
         <div class="m-lg-5">
             <h3 class="mb-3 d-flex justify-content-center">Data Peminjaman Buku</h3>
-            <table class="table table-hover">
+            <table class="table table-hover" style="text-align:center">
                 <thead class="table-dark">
                     <tr>
                         <th scope="col">#</th>
@@ -196,6 +220,70 @@
                                     <input type="hidden" name="loan" value="{{ $loan->id }}">
                                     <button type="submit" class="btn btn-outline-primary">Kembalikan</button>
                                 </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <hr class="m-lg-5">
+
+        <div class="mb-lg-5 me-lg-5 ms-lg-5 mt-lg-2">
+            <h3 class="mb-3 d-flex justify-content-center">Data Collection</h3>
+            <table class="table table-hover" style="text-align:center">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" style="width:20%">Title</th>
+                        <th scope="col" style="width:20%">Author</th>
+                        <th scope="col" style="width:20%">Publisher</th>
+                        <th scope="col" style="width:17%">Publication Year</th>
+                        <th scope="col" style="width:23%"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach ($collections as $collection)
+                        <tr>
+                            <th scope="row">{{ $loop->iteration }}</th>
+                            <td>{{ $collection->book->title }}</td>
+                            <td>{{ $collection->book->author }}</td>
+                            <td>{{ $collection->book->publisher }}</td>
+                            <td>{{ $collection->book->pub_year }}</td>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    @php
+                                        $isLoaned = false;
+                                        foreach ($loaned as $loan) {
+                                            if ($loan->book->id === $collection->book->id) {
+                                                $isLoaned = true;
+                                                break;
+                                            }
+                                        }
+                                    @endphp
+                                    <form action="{{ route('loan.create', $collection->book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $collection->book->id }}">
+                                        @if ($isLoaned)
+                                            <button type="button" class="btn btn-outline-primary"
+                                                disabled>Dipinjam</button>
+                                        @else
+                                            <button type="submit" class="btn btn-outline-primary">Pinjam</button>
+                                        @endif
+                                    </form>
+                                    <form action="{{ route('loan.create', $collection->book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $collection->book->id }}">
+                                        <button type="submit" class="btn btn-outline-success">Delete</button>
+                                    </form>
+                                    <form action="{{ route('loan.create', $collection->book->id) }}" method="post">
+                                        @csrf
+                                        @method('POST')
+                                        <input type="hidden" name="book" value="{{ $collection->book->id }}">
+                                        <button type="submit" class="btn btn-outline-dark">Review</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

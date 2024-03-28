@@ -6,6 +6,7 @@ use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
@@ -50,7 +51,13 @@ class LoanController extends Controller
      */
     public function show(Loan $loan)
     {
-        //
+        $data['loans'] = Loan::all();
+
+        date_default_timezone_set('Asia/Jakarta');
+        $date = date('siHmd');
+
+        $export = Pdf::loadView('export', $data);
+        return $export->download('Book_Loan_Report_' . $date . '.pdf');
     }
 
     /**

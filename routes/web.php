@@ -29,12 +29,18 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(BookController::class)->group(function () {
     Route::get('dashboard', 'index')->name('dashboard');
+    
     Route::post('book/create', 'store')->name('book.create');
-
+    
     Route::post('book/category/create', 'create')->name('book.category.create');
+    
+    Route::post('book/collection/create/{book}', 'show')->name('book.collection.create');
+    Route::post('book/collection/delete/{collection}', 'edit')->name('book.collection.delete');
 });
 
 Route::controller(LoanController::class)->group(function () {
     Route::post('loan/create/{book}', 'store')->name('loan.create');
     Route::put('loan/delete/{loan}', 'update')->name('loan.delete');
+
+    Route::get('loan/export', 'show')->name('export');
 });

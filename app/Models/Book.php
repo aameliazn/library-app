@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Loan;
 use App\Models\User;
+use App\Models\PrivateCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +24,11 @@ class Book extends Model
     public function loan()
     {
         return $this->hasMany(Loan::class, 'bookId');
+    }
+
+    public function privateCollection()
+    {
+        return $this->hasMany(PrivateCollection::class, 'bookId');
     }
 
     public function isLoanedByUser(User $user)
